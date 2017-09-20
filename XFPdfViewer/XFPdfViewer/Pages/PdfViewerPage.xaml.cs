@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
+using XFPdfViewer.ViewModels;
 
 namespace XFPdfViewer.Pages
 {
@@ -15,6 +16,7 @@ namespace XFPdfViewer.Pages
         public PdfViewerPage()
         {
             InitializeComponent();
+            BindingContext = new PdfViewerViewModel();
         }
     }
 }

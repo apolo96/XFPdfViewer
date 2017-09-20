@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace XFPdfViewer.Models
 {
-    class Pdf
+    public class PdfModel
     {
         public string FileName { get; set; }
         public string Url { get; set; }
