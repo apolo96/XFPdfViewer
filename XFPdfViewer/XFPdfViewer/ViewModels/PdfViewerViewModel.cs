@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Plugin.Connectivity;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -19,28 +20,42 @@ namespace XFPdfViewer.ViewModels
 
             _pdfModel = new PdfModel()
             {
-                FileName = "demo1.pdf",
+                FileName = "demo001.pdf",
                 Url = "http://www.pdfpdf.com/samples/pptdemo2.pdf"
             };
 
-            DownloadPdfCommand = new Command((obj) => DownloadPdf());
+            Device.BeginInvokeOnMainThread(async () =>
+                {
+                    await DownloadPdf();
+                }
+            );
+
+            DownloadPdfCommand = new Command(async () => await DownloadPdf());
         }
 
-        private async void DownloadPdf()
+        private async Task DownloadPdf()
         {            
 
             IsBusy = true;
-
-            if (await PdfFileHelper.ExistsAsync(_pdfModel.FileName) == false)
+            IsVisible = false;
+            if (CrossConnectivity.Current.IsConnected == true)
             {
-                await PdfFileHelper.DownloadDocumentsAsync(_pdfModel);
+                if (await PdfFileHelper.ExistsAsync(_pdfModel.FileName) == false)
+                {
+                    await PdfFileHelper.DownloadDocumentsAsync(_pdfModel);
+                    IsVisible = true;
+                }
+                PdfUri = PdfFileHelper.GetFilePathFromRoot(_pdfModel.FileName);
             }
-            PdfUri = PdfFileHelper.GetFilePathFromRoot(_pdfModel.FileName);
+            else
+            {
+                await Application.Current.MainPage.DisplayAlert("Ops", "Revisa tu conexion a Internet", "Ok");
+            }
 
             IsBusy = false;
         }
 
-        bool _isBusy = false;
+        private bool _isBusy;
 
         public bool IsBusy
         {
@@ -73,6 +88,21 @@ namespace XFPdfViewer.ViewModels
                 RaisePropertyChanged();
             }
         }
+
+        private bool _isVisible;
+
+        public bool IsVisible
+        {
+            get
+            {
+                return _isVisible;
+            }
+            set
+            {
+                _isVisible = value;
+            }
+        }
+
 
 
     }

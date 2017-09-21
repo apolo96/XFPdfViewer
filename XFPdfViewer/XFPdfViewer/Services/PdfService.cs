@@ -14,10 +14,7 @@ namespace XFPdfViewer.Services
     {
         public static async Task<MemoryStream> DownloadFileAsync(string url)
         {
-            if (CrossConnectivity.Current.IsConnected == false)
-            {
-                return null;
-            }
+            
 
             try
             {

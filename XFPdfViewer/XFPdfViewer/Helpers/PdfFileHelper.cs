@@ -35,14 +35,14 @@ namespace XFPdfViewer.Helpers
 
         public static async Task<bool> ExistsAsync(string fileName) => await FileSystem.Current.LocalStorage.CheckExistsAsync(fileName) == ExistenceCheckResult.FileExists;
 
-        public static async Task DownloadDocumentsAsync(PdfModel pdfDocEntity)
+        public static async Task DownloadDocumentsAsync(PdfModel PdfModel)
         {
-            var stream = await PdfService.DownloadFileAsync(pdfDocEntity.Url);
+            var stream = await PdfService.DownloadFileAsync(PdfModel.Url);
             if (stream == null)
             {
                 return;
             }
-            await SaveFileAsync(pdfDocEntity.FileName, stream);
+            await SaveFileAsync(PdfModel.FileName, stream);
         }
     }
 }
