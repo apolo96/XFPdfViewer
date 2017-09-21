@@ -20,7 +20,7 @@ namespace XFPdfViewer.ViewModels
 
             _pdfModel = new PdfModel()
             {
-                FileName = "demo001.pdf",
+                FileName = "demo03.pdf",
                 Url = "http://www.pdfpdf.com/samples/pptdemo2.pdf"
             };
 
@@ -34,24 +34,28 @@ namespace XFPdfViewer.ViewModels
         }
 
         private async Task DownloadPdf()
-        {            
+        {
 
             IsBusy = true;
             IsVisible = false;
-            if (CrossConnectivity.Current.IsConnected == true)
+
+            if (await PdfFileHelper.ExistsAsync(_pdfModel.FileName) == false)
             {
-                if (await PdfFileHelper.ExistsAsync(_pdfModel.FileName) == false)
+                if (CrossConnectivity.Current.IsConnected == true)
                 {
                     await PdfFileHelper.DownloadDocumentsAsync(_pdfModel);
                     IsVisible = true;
                 }
-                PdfUri = PdfFileHelper.GetFilePathFromRoot(_pdfModel.FileName);
+                else
+                {
+                    await Application.Current.MainPage.DisplayAlert("Ops", "Revisa tu conexion a Internet", "Ok");
+                }
             }
             else
             {
-                await Application.Current.MainPage.DisplayAlert("Ops", "Revisa tu conexion a Internet", "Ok");
+                IsVisible = true;
             }
-
+            PdfUri = PdfFileHelper.GetFilePathFromRoot(_pdfModel.FileName);
             IsBusy = false;
         }
 
@@ -100,6 +104,7 @@ namespace XFPdfViewer.ViewModels
             set
             {
                 _isVisible = value;
+                RaisePropertyChanged();
             }
         }
 
